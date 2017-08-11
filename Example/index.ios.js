@@ -13,14 +13,14 @@ import {
 // import ImageCarousell from 'react-native-image-carousell';
 import ImageCarousell from './ImageCarousell';
 
-IMGS = [
-  'https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024',
-  'https://images.unsplash.com/photo-1441716844725-09cedc13a4e7?h=1024',
-  'https://images.unsplash.com/photo-1441448770220-76743f9e6af6?h=1024',
-  'https://images.unsplash.com/photo-1441260038675-7329ab4cc264?h=1024',
-  'https://images.unsplash.com/photo-1441126270775-739547c8680c?h=1024',
-  'https://images.unsplash.com/photo-1440964829947-ca3277bd37f8?h=1024',
-  'https://images.unsplash.com/photo-1440847899694-90043f91c7f9?h=1024'
+const IMGS = [
+  { uri: 'https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024' },
+  { uri: 'https://images.unsplash.com/photo-1441716844725-09cedc13a4e7?h=1024' },
+  { uri: 'https://images.unsplash.com/photo-1441448770220-76743f9e6af6?h=1024' },
+  { uri: 'https://images.unsplash.com/photo-1441260038675-7329ab4cc264?h=1024' },
+  { uri: 'https://images.unsplash.com/photo-1441126270775-739547c8680c?h=1024' },
+  { uri: 'https://images.unsplash.com/photo-1440964829947-ca3277bd37f8?h=1024' },
+  { uri: 'https://images.unsplash.com/photo-1440847899694-90043f91c7f9?h=1024' }
 ];
 
 export default class Ausesome extends Component {
@@ -30,26 +30,6 @@ export default class Ausesome extends Component {
     const dataSource = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
-    this.state = {
-      dataSource: dataSource.cloneWithRows([
-        null,
-        null,
-        { uri: IMGS[0] },
-        { uri: IMGS[1] },
-        { uri: IMGS[2] },
-        { uri: IMGS[3] },
-        { uri: IMGS[4] },
-        { uri: IMGS[5] },
-        { uri: IMGS[6] },
-        { uri: IMGS[1] },
-        { uri: IMGS[2] },
-        { uri: IMGS[3] },
-        { uri: IMGS[4] },
-        { uri: IMGS[5] },
-        null,
-        null,
-      ]),
-    };
     // this.state = {
     //   dataSource: dataSource.cloneWithRows([
     //     null,
@@ -74,9 +54,10 @@ export default class Ausesome extends Component {
     return (
       <View style={styles.container}>
         <ImageCarousell
-          middview={<View style={{ width: 80, height: 30,backgroundColor:'#333333' }} />}
+          imageArray={IMGS}
+          middview={<View style={{ width: 80, height: 30, backgroundColor: '#333333' }} />}
           showPreview={true}
-          dataSource={this.state.dataSource} />
+        />
       </View>
     );
   }

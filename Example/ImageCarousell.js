@@ -13,7 +13,7 @@ import {
 
 export default class ImageCarousell extends Component {
   static propTypes = {
-    dataSource: PropTypes.instanceOf(ListView.DataSource).isRequired,
+    // dataSource: PropTypes.instanceOf(ListView.DataSource).isRequired,
     initialIndex: PropTypes.number,
     showPreview: PropTypes.bool,
     previewImageSize: PropTypes.number,
@@ -24,7 +24,8 @@ export default class ImageCarousell extends Component {
     previewImageStyle: View.propTypes.style,
     width: PropTypes.number,
     height: PropTypes.number,
-    middview:PropTypes.element
+    middview:PropTypes.element,
+    imageArray:PropTypes.array
   };
 
   static defaultProps = {
@@ -50,10 +51,20 @@ export default class ImageCarousell extends Component {
     this.state = {
       showPreview: props.showPreview,
       currentPage: this.props.initialIndex,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2,
+      }),
     };
   }
 
   componentDidMount() {
+    let datas = [];
+    let newDatas = datas.concat([null, null], this.props.imageArray, [null, null]);
+
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(newDatas),
+    });
+
     setTimeout(() => {
       this.refresh();
     }, 100)
@@ -113,20 +124,21 @@ export default class ImageCarousell extends Component {
   handlePreviewScrollEnd(e) {
     const { width, previewImageSize } = this.props;
     const imageSize = previewImageSize + 10;
+    const length = this.props.imageArray.length;
 
     const offset = e.nativeEvent.contentOffset.x;
     const leftOffsetFromMiddle = (width - imageSize) / 2 + offset;
 
-    const currentPage = this.state.currentPage;
     let currentIndex = Math.ceil(leftOffsetFromMiddle / imageSize);
 
     if (currentIndex < 2) {
       currentIndex = 2;
     }
-    if (currentIndex > 11) {
-      currentIndex = 11;
+    if (currentIndex >= (length + 1)) {
+      currentIndex = length + 1;
     }
-    if (currentIndex >= 2 && currentIndex <= 11) {
+
+    if (currentIndex >= 2 && currentIndex <= (length + 1)) {
       const newPreviewOffset = -(width - imageSize) / 2 + currentIndex * imageSize;
       this._refPreviewListView.scrollTo({ x: newPreviewOffset, animated: true });
     }
@@ -214,7 +226,7 @@ export default class ImageCarousell extends Component {
         <ListView
           initialListSize={10}
           onLayout={this.handlePreviewLayout}
-          dataSource={this.props.dataSource}
+          dataSource={this.state.dataSource}
           renderRow={this.renderImagePreview}
           horizontal={true}
           onScrollEndDrag={this.handlePreviewScrollEnd}
@@ -254,7 +266,7 @@ export default class ImageCarousell extends Component {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           onScroll={this.handleScroll}
-          dataSource={this.props.dataSource}
+          dataSource={this.state.dataSource}
           style={styles.listView}
           renderRow={this.renderImageView}
           ref={comp => { this._refListView = comp; return; }}
